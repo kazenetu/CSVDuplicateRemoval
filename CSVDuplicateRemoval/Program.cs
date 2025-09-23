@@ -42,21 +42,44 @@ class Program
         var outputPath = Environment.CurrentDirectory + "/Output";
         var contents = new StringBuilder();
 
-        Console.WriteLine($"変換結果：重複分");
+        // 重複チェックと出力用CSV文字列の追加
+        var duplicateList = new List<string>();
         var tempResult = string.Empty;
-        foreach(var result in convertResult.OrderBy(item => item))
+        foreach(var result in convertResult.OrderBy(item => item.convertResult))
         {
-            if(tempResult == result)
+            // 行文字列を作成
+            var rowResult = new StringBuilder();
+            var srcArray = csvList[result.srcIndex];
+            foreach (var col in srcArray)
             {
-                Console.WriteLine($"> {result}");
+                rowResult.Append($"{col},");
+            }
+
+            if(tempResult == result.convertResult)
+            {
+                // 前回と一致場合は重複
+                duplicateList.Add(rowResult.ToString());
             }
             else
             {
-                contents.AppendLine(result);
+                // 前回と一致しない場合はCSV出力対象
+                contents.AppendLine(rowResult.ToString());
             }
-            tempResult = result;
+            tempResult = result.convertResult;
         }
 
+        //　重複表示
+        if (duplicateList.Any())
+        {
+            Console.WriteLine($"{Environment.NewLine}重複が存在します！");
+            foreach (var duplicateItemm in duplicateList)
+            {
+                Console.WriteLine($"  > {duplicateItemm}");
+            }
+            Console.WriteLine();
+        }
+
+        // CSV出力
         CreateFile(outputPath, "convert.csv", contents.ToString());
     }
 
@@ -87,10 +110,11 @@ class Program
     /// <param name="csvList">CSV読み込み結果</param>
     /// <param name="convertColmus">変換カラムリスト</param>
     /// <returns>変換結果文字列リスト</returns>
-    private static List<string> Convert(List<string[]> csvList, string[] convertColmus)
+    private static List<(int srcIndex, string convertResult)> Convert(List<string[]> csvList, string[] convertColmus)
     {
-        var result = new List<string>();
+        var result = new List<(int srcIndex, string convertResult)>();
 
+        var rowIndex = 0;
         foreach (var row in csvList)
         {
             var rowResult = new StringBuilder();
@@ -118,7 +142,8 @@ class Program
                 colIndex++;
             }
 
-            result.Add(rowResult.ToString());
+            result.Add((rowIndex, rowResult.ToString()));
+            rowIndex++;
         }
 
         return result;
