@@ -19,5 +19,15 @@ class Program
             Console.WriteLine("    ・PostNo:郵便番号  全角数字→半角数字、-・ー除外");
             return;
         }
+
+        var csvFilePath = args[0];
+        var columns = args[1].Split(',');
+
+        Console.WriteLine($"入力ファイル{csvFilePath}]");
+        Console.WriteLine($"カラム変換リスト");
+        foreach(var column in columns)
+        {
+            Console.WriteLine($"> {column}");
+        }
     }
 }
