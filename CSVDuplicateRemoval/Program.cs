@@ -35,29 +35,12 @@ class Program
         //　CSVファイルを読み込み
         var csvList = LoadCSV(csvFilePath);
 
-        Console.WriteLine($"入力ファイル{csvFilePath}]");
-        foreach (var line in csvList)
-        {
-            Console.Write("> ");
-            foreach (var column in line)
-            {
-                Console.Write($"{column}, ");
-            }
-            Console.WriteLine();
-        }
-
-        Console.WriteLine($"変換結果");
+        // 重複確認用にCSV読み込み結果を変換
         var convertResult = Convert(csvList,columns);
-        foreach(var result in convertResult)
-        {
-            Console.WriteLine($"> {result}");
-        }
 
-        Console.WriteLine($"変換結果：重複除去");
-        foreach(var result in convertResult.Distinct())
-        {
-            Console.WriteLine($"> {result}");
-        }
+        // ファイル出力
+        var outputPath = Environment.CurrentDirectory + "/Output";
+        var contents = new StringBuilder();
 
         Console.WriteLine($"変換結果：重複分");
         var tempResult = string.Empty;
@@ -67,14 +50,14 @@ class Program
             {
                 Console.WriteLine($"> {result}");
             }
+            else
+            {
+                contents.AppendLine(result);
+            }
             tempResult = result;
         }
 
-        Console.WriteLine($"カラム変換リスト");
-        foreach(var column in columns)
-        {
-            Console.WriteLine($"> {column}");
-        }
+        CreateFile(outputPath, "convert.csv", contents.ToString());
     }
 
     /// <summary>
@@ -182,5 +165,23 @@ class Program
             .Replace("９", "9")
             .Replace("ー", string.Empty)
             .Replace("-", string.Empty);
+    }
+
+    /// <summary>
+    /// ファイル書き出し
+    /// </summary>
+    /// <param name="path">書き出しパス</param>
+    /// <param name="fileName">書き出しファイル名</param>
+    /// <param name="contents">書き出し内容(ソースコード)</param>
+    private static void CreateFile(string path, string fileName, string contents)
+    {
+        // ディレクトリ作成
+        if (!Directory.Exists(path))
+        {
+            Directory.CreateDirectory(path);
+        }
+
+        // ファイル作成
+        File.WriteAllText(Path.Combine(path, fileName), contents);
     }
 }
