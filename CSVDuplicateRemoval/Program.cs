@@ -35,9 +35,14 @@ class Program
         var csvList = LoadCSV(csvFilePath);
 
         Console.WriteLine($"入力ファイル{csvFilePath}]");
-        foreach (var csvItem in csvList)
+        foreach (var line in csvList)
         {
-            Console.WriteLine($"> {csvItem}");
+            Console.Write("> ");
+            foreach (var column in line)
+            {
+                Console.Write($"{column}, ");
+            }
+            Console.WriteLine();
         }
 
         Console.WriteLine($"カラム変換リスト");
@@ -52,15 +57,15 @@ class Program
     /// </summary>
     /// <param name="csvFilePath">CSVパス</param>
     /// <returns>読み込み結果</returns>
-    private static List<string> LoadCSV(string csvFilePath)
+    private static List<string[]> LoadCSV(string csvFilePath)
     {
-        var result = new List<string>();
+        var result = new List<string[]>();
         using (StreamReader sr = new StreamReader(csvFilePath))
         {
             string? line;
             while ((line = sr.ReadLine()) != null)
             {
-                result.Add(line);
+                result.Add(line.Split(','));
             }
         }
 
