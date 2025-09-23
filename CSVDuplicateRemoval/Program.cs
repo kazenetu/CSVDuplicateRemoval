@@ -21,13 +21,40 @@ class Program
         }
 
         var csvFilePath = args[0];
+        var csvList = LoadCSV(csvFilePath);
+
         var columns = args[1].Split(',');
 
         Console.WriteLine($"入力ファイル{csvFilePath}]");
+        foreach (var csvItem in csvList)
+        {
+            Console.WriteLine($"> {csvItem}");
+        }
+
         Console.WriteLine($"カラム変換リスト");
         foreach(var column in columns)
         {
             Console.WriteLine($"> {column}");
         }
+    }
+
+    /// <summary>
+    /// CSVファイルの読み込み処理
+    /// </summary>
+    /// <param name="csvFilePath">CSVパス</param>
+    /// <returns>読み込み結果</returns>
+    private static List<string> LoadCSV(string csvFilePath)
+    {
+        var result = new List<string>();
+        using (StreamReader sr = new StreamReader(csvFilePath))
+        {
+            string? line;
+            while ((line = sr.ReadLine()) != null)
+            {
+                result.Add(line);
+            }
+        }
+
+        return result;
     }
 }
