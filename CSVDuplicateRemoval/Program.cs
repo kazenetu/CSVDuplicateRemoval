@@ -65,7 +65,8 @@ class Program
             string? line;
             while ((line = sr.ReadLine()) != null)
             {
-                result.Add(line.Split(','));
+                var array = line.Split(',').Select(col => col.Replace("\"", string.Empty)).ToArray();
+                result.Add(array);
             }
         }
 
