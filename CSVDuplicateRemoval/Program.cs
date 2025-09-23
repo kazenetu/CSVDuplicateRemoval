@@ -24,6 +24,13 @@ class Program
         var csvFilePath = args[0];
         var columns = args[1].Split(',');
 
+        // 入力チェック：CSVファイル
+        if (!File.Exists(csvFilePath))
+        {
+            Console.WriteLine($"入力CSVファイル[{csvFilePath}]が存在しません");
+            return;
+        }
+
         //　CSVファイルを読み込み
         var csvList = LoadCSV(csvFilePath);
 
