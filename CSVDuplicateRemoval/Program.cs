@@ -52,7 +52,23 @@ class Program
         {
             Console.WriteLine($"> {result}");
         }
-        
+
+        Console.WriteLine($"変換結果：重複除去");
+        foreach(var result in convertResult.Distinct())
+        {
+            Console.WriteLine($"> {result}");
+        }
+
+        Console.WriteLine($"変換結果：重複分");
+        var tempResult = string.Empty;
+        foreach(var result in convertResult.OrderBy(item => item))
+        {
+            if(tempResult == result)
+            {
+                Console.WriteLine($"> {result}");
+            }
+            tempResult = result;
+        }
 
         Console.WriteLine($"カラム変換リスト");
         foreach(var column in columns)
