@@ -1,4 +1,5 @@
 ﻿namespace CSVDuplicateRemoval;
+using System.Text;
 
 class Program
 {
@@ -45,6 +46,14 @@ class Program
             Console.WriteLine();
         }
 
+        Console.WriteLine($"変換結果");
+        var convertResult = Convert(csvList,columns);
+        foreach(var result in convertResult)
+        {
+            Console.WriteLine($"> {result}");
+        }
+        
+
         Console.WriteLine($"カラム変換リスト");
         foreach(var column in columns)
         {
@@ -71,5 +80,91 @@ class Program
         }
 
         return result;
+    }
+
+    /// <summary>
+    /// CSV読み込み結果の変換結果取得
+    /// </summary>
+    /// <param name="csvList">CSV読み込み結果</param>
+    /// <param name="convertColmus">変換カラムリスト</param>
+    /// <returns>変換結果文字列リスト</returns>
+    private static List<string> Convert(List<string[]> csvList, string[] convertColmus)
+    {
+        var result = new List<string>();
+
+        foreach (var row in csvList)
+        {
+            var rowResult = new StringBuilder();
+            var colIndex = 0;
+            foreach (var col in row)
+            {
+                var colResult = col;
+                if (colIndex < convertColmus.Length)
+                {
+                    switch (convertColmus[colIndex])
+                    {
+                        case "Name":
+                            colResult = col.Replace(" ", string.Empty).Replace("　", string.Empty);
+                        break;
+                        case "Address":
+                            colResult = ConvertAddress(col);
+                        break;
+                        case "PostNo":
+                            colResult = ConvertPosetNo(col);
+                        break;
+                    }
+                }
+                rowResult.Append($"{colResult},");
+
+                colIndex++;
+            }
+
+            result.Add(rowResult.ToString());
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// 住所の書式統一変換
+    /// </summary>
+    /// <param name="target">変換元文字列</param>
+    /// <returns><変換結果/returns>
+    private static string ConvertAddress(string target)
+    {
+        return target
+            .Replace("０", "0")
+            .Replace("１", "1")
+            .Replace("２", "2")
+            .Replace("３", "3")
+            .Replace("４", "4")
+            .Replace("５", "5")
+            .Replace("６", "6")
+            .Replace("７", "7")
+            .Replace("８", "8")
+            .Replace("９", "9")
+            .Replace("番地", "-");
+    }
+
+    /// <summary>
+    /// 郵便番号の書式統一変換
+    /// </summary>
+    /// <param name="target">変換元文字列</param>
+    /// <returns><変換結果/returns>
+    private static string ConvertPosetNo(string target)
+    {
+        return target
+            .Replace("０", "0")
+            .Replace("１", "1")
+            .Replace("２", "2")
+            .Replace("３", "3")
+            .Replace("４", "4")
+            .Replace("５", "5")
+            .Replace("６", "6")
+            .Replace("７", "7")
+            .Replace("８", "8")
+            .Replace("９", "9")
+            .Replace("ー", string.Empty)
+            .Replace("-", string.Empty);
     }
 }
