@@ -20,10 +20,12 @@ class Program
             return;
         }
 
+        // 入力パラメータ取得
         var csvFilePath = args[0];
-        var csvList = LoadCSV(csvFilePath);
-
         var columns = args[1].Split(',');
+
+        //　CSVファイルを読み込み
+        var csvList = LoadCSV(csvFilePath);
 
         Console.WriteLine($"入力ファイル{csvFilePath}]");
         foreach (var csvItem in csvList)
